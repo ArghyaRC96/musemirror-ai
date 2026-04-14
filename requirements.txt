@@ -1,0 +1,8 @@
+librosa
+soundfile
+numpy
+pandas
+matplotlib
+openai-whisper
+gdown
+tqdm

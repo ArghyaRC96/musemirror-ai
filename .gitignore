@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment
+.env
+.venv/
+venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Audio files (avoid large uploads)
+*.mp3
+*.wav
+*.flac
+*.m4a
+*.ogg
+
+# Model/cache
+.cache/
+
+# Logs
+*.log
