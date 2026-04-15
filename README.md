@@ -386,5 +386,5 @@ To evolve into a creator-facing music intelligence system that helps artists und
 
 \### Song Analysis Report
 
-!\[Report](sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)
+!\[Report](sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)	
 
