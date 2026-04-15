@@ -50,7 +50,7 @@ MuseMirror AI was built to go further:
 
 \- Perceived tempo correction  
 
-\- Tempo ratio \& tempo mode  
+\- Tempo ratio and tempo mode  
 
 
 
@@ -144,37 +144,47 @@ MuseMirror AI was built to go further:
 
 
 
+```text
+
 musemirror-ai/
 
 ├── notebooks/
 
-│ ├── MuseMirror\_V1.ipynb
+│   ├── MuseMirror\_V1.ipynb
 
-│ └── MuseMirror\_V1\_1.ipynb
+│   └── MuseMirror\_V1\_1.ipynb
 
 │
 
 ├── sample\_outputs/
 
-│ ├── v1\_1/
+│   ├── v1\_1/
 
-│ │ ├── json/ # JSON outputs from V1.1
+│   │   ├── json/
 
-│ │ └── screenshots/ # Visual outputs from V1.1
+│   │   └── screenshots/
 
-│ │
+│   │
 
-│ └── v2/
+│   └── v2/
 
-│ ├── json/ # (future)
+│       ├── json/
 
-│ └── screenshots/ # (future)
+│       └── screenshots/
 
 │
 
 ├── assets/
 
 ├── docs/
+
+├── .gitignore
+
+├── README.md
+
+└── requirements.txt
+
+```
 
 
 
@@ -236,7 +246,7 @@ MuseMirror AI produces structured outputs such as:
 
 \- \*\*V1\*\* → baseline pipeline  
 
-\- \*\*V1.1\*\* → refined version with improved structure, energy intelligence, critique, and export system  
+\- \*\*V1.1\*\* → refined version  
 
 
 
@@ -252,15 +262,13 @@ This system uses heuristic interpretation and should not be treated as absolute 
 
 
 
-Examples:
+\- spectral centroid ≠ full brightness perception  
 
-\- spectral centroid ≠ full perception of brightness  
+\- zero crossing rate ≠ distortion directly  
 
-\- zero crossing rate ≠ perceived distortion directly  
+\- structure inferred from energy  
 
-\- structure is inferred from energy, not annotated sections  
-
-\- transcription accuracy depends on audio quality  
+\- transcription depends on audio quality  
 
 
 
@@ -276,17 +284,17 @@ I designed the project direction, analysis goals, and system architecture.
 
 
 
-I used AI assistance to accelerate development, while making key decisions about:
+Used AI assistance for development, while making decisions on:
 
-\- what features to extract  
+\- feature selection  
 
-\- how to interpret them meaningfully  
+\- interpretation logic  
 
-\- how to structure the pipeline  
+\- pipeline structure  
 
-\- how to generate useful critique  
+\- critique generation  
 
-\- how to present and export results  
+\- output presentation  
 
 
 
@@ -318,7 +326,7 @@ I used AI assistance to accelerate development, while making key decisions about
 
 
 
-To evolve into a creator-facing music intelligence system that helps artists understand their songs beyond raw technical metrics.
+To build a creator-focused music intelligence system.
 
 
 
@@ -332,59 +340,59 @@ To evolve into a creator-facing music intelligence system that helps artists und
 
 \### Audio Properties
 
-!\[Audio Properties](sample\_outputs/v1\_1/screenshots/audio\_properties.png)
+!\[Audio](sample\_outputs/v1\_1/screenshots/audio\_properties.png)
 
 
 
-\### Waveform Visualization
+\### Waveform
 
 !\[Waveform](sample\_outputs/v1\_1/screenshots/waveform\_visualization.png)
 
 
 
-\### Rhythm Core Analysis
+\### Rhythm Analysis
 
 !\[Rhythm](sample\_outputs/v1\_1/screenshots/rhythm\_core\_analysis.png)
 
 
 
-\### Timbre \& Harmonic Features
+\### Timbre Features
 
 !\[Timbre](sample\_outputs/v1\_1/screenshots/timbre\_harmonic\_features.png)
 
 
 
-\### Transcription Intelligence
+\### Transcription
 
 !\[Transcription](sample\_outputs/v1\_1/screenshots/transcription\_intelligence.png)
 
 
 
-\### Energy Intelligence
+\### Energy
 
 !\[Energy](sample\_outputs/v1\_1/screenshots/energy\_intelligence.png)
 
 
 
-\### Energy Block Classification
+\### Energy Blocks
 
-!\[Energy Blocks](sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png)
-
-
-
-\### Key Observations
-
-!\[Observations](sample\_outputs/v1\_1/screenshots/key\_observations.png)
+!\[Blocks](sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png)
 
 
 
-\### Final Critique
+\### Observations
+
+!\[Obs](sample\_outputs/v1\_1/screenshots/key\_observations.png)
+
+
+
+\### Critique
 
 !\[Critique](sample\_outputs/v1\_1/screenshots/final\_critique\_report.png)
 
 
 
-\### Song Analysis Report
+\### Final Report
 
-!\[Report](sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)	
+!\[Report](sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)
 
