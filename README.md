@@ -340,59 +340,59 @@ To build a creator-focused music intelligence system.
 
 \### Audio Properties
 
-!\[Audio](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/audio\_properties.png)
+!\[Audio](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/audio\_properties.png)
 
 
 
 \### Waveform
 
-!\[Waveform](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/waveform\_visualization.png)
+!\[Waveform](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/waveform\_visualization.png)
 
 
 
 \### Rhythm Analysis
 
-!\[Rhythm](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/rhythm\_core\_analysis.png)
+!\[Rhythm](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/rhythm\_core\_analysis.png)
 
 
 
 \### Timbre Features
 
-!\[Timbre](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/timbre\_harmonic\_features.png)
+!\[Timbre](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/timbre\_harmonic\_features.png)
 
 
 
 \### Transcription
 
-!\[Transcription](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/transcription\_intelligence.png)
+!\[Transcription](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/transcription\_intelligence.png)
 
 
 
 \### Energy
 
-!\[Energy](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/energy\_intelligence.png)
+!\[Energy](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/energy\_intelligence.png)
 
 
 
 \### Energy Blocks
 
-!\[Blocks](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png)
+!\[Blocks](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png)
 
 
 
 \### Observations
 
-!\[Obs](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/key\_observations.png)
+!\[Obs](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/key\_observations.png)
 
 
 
 \### Critique
 
-!\[Critique](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/final\_critique\_report.png)
+!\[Critique](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/final\_critique\_report.png)
 
 
 
 \### Final Report
 
-!\[Report](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/main/sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)
+!\[Report](https://raw.githubusercontent.com/ArghyaRC96/musemirror-ai/refs/heads/main/sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)
 
