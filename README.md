@@ -340,59 +340,59 @@ To build a creator-focused music intelligence system.
 
 \### Audio Properties
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/audio\_properties.png?raw=1" alt="Audio Properties" width="900">
+!\[Audio](sample\_outputs/v1\_1/screenshots/audio\_properties.png)
 
 
 
 \### Waveform
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/waveform\_visualization.png?raw=1" alt="Waveform" width="900">
+!\[Waveform](sample\_outputs/v1\_1/screenshots/waveform\_visualization.png)
 
 
 
 \### Rhythm Analysis
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/rhythm\_core\_analysis.png?raw=1" alt="Rhythm Analysis" width="900">
+!\[Rhythm](sample\_outputs/v1\_1/screenshots/rhythm\_core\_analysis.png)
 
 
 
 \### Timbre Features
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/timbre\_harmonic\_features.png?raw=1" alt="Timbre Features" width="900">
+!\[Timbre](sample\_outputs/v1\_1/screenshots/timbre\_harmonic\_features.png)
 
 
 
 \### Transcription
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/transcription\_intelligence.png?raw=1" alt="Transcription" width="900">
+!\[Transcription](sample\_outputs/v1\_1/screenshots/transcription\_intelligence.png)
 
 
 
 \### Energy
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/energy\_intelligence.png?raw=1" alt="Energy" width="900">
+!\[Energy](sample\_outputs/v1\_1/screenshots/energy\_intelligence.png)
 
 
 
 \### Energy Blocks
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png?raw=1" alt="Energy Blocks" width="900">
+!\[Blocks](sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png)
 
 
 
 \### Observations
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/key\_observations.png?raw=1" alt="Observations" width="900">
+!\[Obs](sample\_outputs/v1\_1/screenshots/key\_observations.png)
 
 
 
 \### Critique
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/final\_critique\_report.png?raw=1" alt="Critique" width="900">
+!\[Critique](sample\_outputs/v1\_1/screenshots/final\_critique\_report.png)
 
 
 
 \### Final Report
 
-<img src="https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png?raw=1" alt="Final Report" width="900">
+!\[Report](sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)
 
