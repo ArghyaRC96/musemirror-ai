@@ -340,7 +340,7 @@ To build a creator-focused music intelligence system.
 
 \### Audio Properties
 
-!\[Audio](sample\_outputs/v1\_1/screenshots/audio\_properties.png)
+<img src="sample_outputs/v1_1/screenshots/audio_properties.png" width="900">
 
 
 
