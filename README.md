@@ -338,61 +338,43 @@ To build a creator-focused music intelligence system.
 
 
 
-\### Audio Properties
+### Audio Properties
 
 <img src="sample_outputs/v1_1/screenshots/audio_properties.png" width="900">
 
+### Waveform
 
+<img src="sample_outputs/v1_1/screenshots/waveform_visualization.png" width="900">
 
-\### Waveform
+### Rhythm Analysis
 
-!\[Waveform](sample\_outputs/v1\_1/screenshots/waveform\_visualization.png)
+<img src="sample_outputs/v1_1/screenshots/rhythm_core_analysis.png" width="900">
 
+### Timbre Features
 
+<img src="sample_outputs/v1_1/screenshots/timbre_harmonic_features.png" width="900">
 
-\### Rhythm Analysis
+### Transcription
 
-!\[Rhythm](sample\_outputs/v1\_1/screenshots/rhythm\_core\_analysis.png)
+<img src="sample_outputs/v1_1/screenshots/transcription_intelligence.png" width="900">
 
+### Energy
 
+<img src="sample_outputs/v1_1/screenshots/energy_intelligence.png" width="900">
 
-\### Timbre Features
+### Energy Blocks
 
-!\[Timbre](sample\_outputs/v1\_1/screenshots/timbre\_harmonic\_features.png)
+<img src="sample_outputs/v1_1/screenshots/energy_block_classification.png" width="900">
 
+### Observations
 
+<img src="sample_outputs/v1_1/screenshots/key_observations.png" width="900">
 
-\### Transcription
+### Critique
 
-!\[Transcription](sample\_outputs/v1\_1/screenshots/transcription\_intelligence.png)
+<img src="sample_outputs/v1_1/screenshots/final_critique_report.png" width="900">
 
+### Final Report
 
-
-\### Energy
-
-!\[Energy](sample\_outputs/v1\_1/screenshots/energy\_intelligence.png)
-
-
-
-\### Energy Blocks
-
-!\[Blocks](sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png)
-
-
-
-\### Observations
-
-!\[Obs](sample\_outputs/v1\_1/screenshots/key\_observations.png)
-
-
-
-\### Critique
-
-!\[Critique](sample\_outputs/v1\_1/screenshots/final\_critique\_report.png)
-
-
-
-\### Final Report
-
-!\[Report](sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)
+<img src="sample_outputs/v1_1/screenshots/song_analysis_report.png" width="900">
 
