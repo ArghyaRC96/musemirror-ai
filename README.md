@@ -340,59 +340,59 @@ To build a creator-focused music intelligence system.
 
 \### Audio Properties
 
-!\[Audio](sample\_outputs/v1\_1/screenshots/audio\_properties.png)
+!\[Audio](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/audio\_properties.png)
 
 
 
 \### Waveform
 
-!\[Waveform](sample\_outputs/v1\_1/screenshots/waveform\_visualization.png)
+!\[Waveform](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/waveform\_visualization.png)
 
 
 
 \### Rhythm Analysis
 
-!\[Rhythm](sample\_outputs/v1\_1/screenshots/rhythm\_core\_analysis.png)
+!\[Rhythm](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/rhythm\_core\_analysis.png)
 
 
 
 \### Timbre Features
 
-!\[Timbre](sample\_outputs/v1\_1/screenshots/timbre\_harmonic\_features.png)
+!\[Timbre](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/timbre\_harmonic\_features.png)
 
 
 
 \### Transcription
 
-!\[Transcription](sample\_outputs/v1\_1/screenshots/transcription\_intelligence.png)
+!\[Transcription](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/transcription\_intelligence.png)
 
 
 
 \### Energy
 
-!\[Energy](sample\_outputs/v1\_1/screenshots/energy\_intelligence.png)
+!\[Energy](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/energy\_intelligence.png)
 
 
 
 \### Energy Blocks
 
-!\[Blocks](sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png)
+!\[Blocks](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png)
 
 
 
 \### Observations
 
-!\[Obs](sample\_outputs/v1\_1/screenshots/key\_observations.png)
+!\[Obs](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/key\_observations.png)
 
 
 
 \### Critique
 
-!\[Critique](sample\_outputs/v1\_1/screenshots/final\_critique\_report.png)
+!\[Critique](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/final\_critique\_report.png)
 
 
 
 \### Final Report
 
-!\[Report](sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)
+!\[Report](https://github.com/ArghyaRC96/musemirror-ai/blob/main/sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)
 
