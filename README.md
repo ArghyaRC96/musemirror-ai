@@ -148,21 +148,33 @@ musemirror-ai/
 
 ├── notebooks/
 
-│   ├── MuseMirror\_V1.ipynb
+│ ├── MuseMirror\_V1.ipynb
 
-│   └── MuseMirror\_V1\_1.ipynb
+│ └── MuseMirror\_V1\_1.ipynb
+
+│
 
 ├── sample\_outputs/
 
-│   ├── musemirror\_compact\_song\_report.json
+│ ├── v1\_1/
 
-│   └── musemirror\_full\_song\_archive.json
+│ │ ├── json/ # JSON outputs from V1.1
+
+│ │ └── screenshots/ # Visual outputs from V1.1
+
+│ │
+
+│ └── v2/
+
+│ ├── json/ # (future)
+
+│ └── screenshots/ # (future)
+
+│
 
 ├── assets/
 
 ├── docs/
-
-
 
 
 
@@ -307,4 +319,72 @@ I used AI assistance to accelerate development, while making key decisions about
 
 
 To evolve into a creator-facing music intelligence system that helps artists understand their songs beyond raw technical metrics.
+
+
+
+\---
+
+
+
+\## 📸 Sample Outputs
+
+
+
+\### Audio Properties
+
+!\[Audio Properties](sample\_outputs/v1\_1/screenshots/audio\_properties.png)
+
+
+
+\### Waveform Visualization
+
+!\[Waveform](sample\_outputs/v1\_1/screenshots/waveform\_visualization.png)
+
+
+
+\### Rhythm Core Analysis
+
+!\[Rhythm](sample\_outputs/v1\_1/screenshots/rhythm\_core\_analysis.png)
+
+
+
+\### Timbre \& Harmonic Features
+
+!\[Timbre](sample\_outputs/v1\_1/screenshots/timbre\_harmonic\_features.png)
+
+
+
+\### Transcription Intelligence
+
+!\[Transcription](sample\_outputs/v1\_1/screenshots/transcription\_intelligence.png)
+
+
+
+\### Energy Intelligence
+
+!\[Energy](sample\_outputs/v1\_1/screenshots/energy\_intelligence.png)
+
+
+
+\### Energy Block Classification
+
+!\[Energy Blocks](sample\_outputs/v1\_1/screenshots/energy\_block\_classification.png)
+
+
+
+\### Key Observations
+
+!\[Observations](sample\_outputs/v1\_1/screenshots/key\_observations.png)
+
+
+
+\### Final Critique
+
+!\[Critique](sample\_outputs/v1\_1/screenshots/final\_critique\_report.png)
+
+
+
+\### Song Analysis Report
+
+!\[Report](sample\_outputs/v1\_1/screenshots/song\_analysis\_report.png)
 
