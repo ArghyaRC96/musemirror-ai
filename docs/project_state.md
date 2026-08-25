@@ -8,7 +8,7 @@ MuseMirror AI V2.0
 
 ## Current Status
 
-Feature development is complete.
+Feature development and public deployment are complete.
 
 MuseMirror V2 has been tested successfully with multiple songs through the full workflow:
 
@@ -19,7 +19,7 @@ Upload
 -> grounded Vibe Check
 -> creator-facing results
 
-The remaining work is release and deployment:
+MuseMirror V2 has now been released and deployed publicly:
 
 1. Final documentation
 2. GitHub V2 release
@@ -288,3 +288,41 @@ Future work should be treated as either:
 - MuseMirror V3 features
 
 Core MuseMirror AI V2 development is complete.
+
+
+## Public Deployment
+
+MuseMirror AI V2 is publicly available at:
+
+https://musemirror-ai.streamlit.app/
+
+Deployment platform:
+
+Streamlit Community Cloud
+
+Deployment source:
+
+GitHub main branch
+
+Application entrypoint:
+
+app.py
+
+Production secret:
+
+GEMINI_API_KEY via Streamlit Secrets
+
+## Final V2 Status
+
+MuseMirror AI V2 is now:
+
+- feature complete
+- documented
+- committed to GitHub
+- publicly deployed
+- portfolio ready
+- interview ready
+
+Public application:
+
+https://musemirror-ai.streamlit.app/

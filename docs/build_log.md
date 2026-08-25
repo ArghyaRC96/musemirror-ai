@@ -522,3 +522,33 @@ The central design principle remains:
 Calculate the evidence first.
 
 Then make the generative layer accountable to it.
+
+
+---
+
+# Public Deployment
+
+MuseMirror AI V2 was deployed successfully to Streamlit Community Cloud.
+
+Public application:
+
+https://musemirror-ai.streamlit.app/
+
+The deployed application is connected to the GitHub main branch and uses Streamlit Secrets for the Gemini API credential.
+
+The public deployment supports the complete V2 workflow:
+
+Upload Audio
+-> Audio Analysis
+-> Gemini Transcription
+-> Lyric Verification
+-> Grounded Vibe Check
+-> Track Declassified Results
+
+## Final Release Status
+
+MuseMirror AI V2 is publicly available and portfolio ready.
+
+Live application:
+
+https://musemirror-ai.streamlit.app/

@@ -24,7 +24,7 @@ Public portfolio demo
 
 ## Live Demo
 
-Public Streamlit URL will be added after deployment.
+https://musemirror-ai.streamlit.app/
 
 ---
 
@@ -511,4 +511,4 @@ Feature development complete.
 
 Next milestone:
 
-**Public Streamlit deployment.**
+**Public Streamlit deployment complete.**
