@@ -1,0 +1,86 @@
+{
+    "project": {
+        "name": "MuseMirror AI",
+        "version": "V2",
+        "critique_engine": "gemini-3.6-flash"
+    },
+    "track": {
+        "file_name": "Is this what i owe.mp3",
+        "duration_sec": 271.1785941043084
+    },
+    "rhythm": {
+        "perceived_bpm": 80.74951171875,
+        "raw_detected_bpm": 161.4990234375
+    },
+    "energy": {
+        "dynamic_range_class": "high dynamic",
+        "energy_variation_score": 0.1757107749581337,
+        "climax_strength_score": 3.7523934882317915,
+        "crest_factor_proxy": 8.781483992374314
+    },
+    "structure": {
+        "intro": {
+            "length_sec": 30.0,
+            "energy_label": "weak",
+            "character": "restrained"
+        },
+        "breakdown": {
+            "detected": false,
+            "start_sec": null,
+            "end_sec": null,
+            "description": "No major breakdown detected"
+        },
+        "climax": {
+            "start_sec": 75.0,
+            "end_sec": 95.0,
+            "description": "75.0s–95.0s"
+        },
+        "ending": {
+            "energy_label": "weak",
+            "type": "low-energy resolution"
+        }
+    },
+    "lyrics": {
+        "detected_language": "en",
+        "lyric_density": "dense",
+        "verification_status": "pending_user_review",
+        "text": "Hey, hey, Frankie,\nyou gotta walk downtown far below.\nHey, hey, Nancy,\ndid you hide the other night? Or was it the green power that just came up real slow?\nEverybody's got a reason to ride until the sun set down the horizon,\nlooking for the seasons to change its colors down on prison.\nAll the demons start to roll,\ngotta hook up with the soul,\nwhile the giant calls this what I owe.\nHey, hey, Sugar,\nyou got a hippie with some brownies down my liver.\nHey, hey, Cougar,\ndid you sleep the other night with some guy who stretched your cat so wide though you long for your man to adore?\nDetention on the knee to hang your weight and chains down under prison.\nSuspended down underneath from one palm to the other for a dirty reason.\nAll the demons start to roll,\ngotta hook up with the soul,\nwhile the giant calls this what I owe."
+    },
+    "observations": [
+        "The beat tracker initially heard the song at 161.50 BPM, but the more natural perceived pulse is 80.75 BPM, so the system corrected a double-time reading.",
+        "The track shows strong contrast between quieter and high-impact sections, with a wide energy spread across the timeline (RMS range = 0.569).",
+        "The energy variation score is 0.176, suggesting the song keeps a comparatively stable energy shape.",
+        "The strongest local peak is much stronger than the song’s average energy level (climax strength score = 3.75), which helps the main impact moment stand out clearly.",
+        "The signal retains strong peaks relative to its average loudness (crest-factor proxy = 8.78), which suggests preserved punch rather than a heavily flattened shape.",
+        "The opening lasts about 30.0 seconds and feels restrained, which shapes the first impression of the track.",
+        "The song does not show a major breakdown zone, so its energy flow feels more continuous than dramatically interrupted.",
+        "The main climax zone appears around 75.0s–95.0s, placing the highest local impact in the middle portion of the song.",
+        "The song closes with a low-energy resolution, which influences how resolved, suspended, or forceful the ending feels.",
+        "The energy map contains 7 strong block(s), 8 medium block(s), and 4 weak block(s), showing how concentrated or distributed the song’s intensity is.",
+        "The transcription suggests dense lyrical phrasing across 18 segments, which can increase momentum but may reduce breathing space.",
+        "The transcription confidence is estimated as moderate to high, so the text is useful for analysis but may still contain errors in dense or stylized passages."
+    ],
+    "vibe_check": {
+        "whats_hitting": [
+            "The dynamic climax between 75.0s and 95.0s delivers a massive local peak with a high climax strength score of 3.75, making the center of the track feel deeply rewarding.",
+            "Your dynamic depth shines through a strong crest factor proxy of 8.78, preserving crisp transient punch and natural impact across the song.",
+            "The dense lyrical storytelling driven by vivid character narratives brings fantastic forward momentum to the entire track.",
+            "A comfortable perceived pulse of 80.75 BPM gives the dense vocal phrasing a steady, grounded groove to sit inside.",
+            "With 15 of your 19 energy blocks registering as medium or strong, the track maintains an impressively solid flow once it gets moving."
+        ],
+        "needs_a_little_love": [
+            "The 30-second restrained intro sets a patient atmospheric setup, though it could potentially feel a bit long before the main energy kicks into gear.",
+            "The continuous, dense vocal delivery keeps momentum high, but giving the listener brief breathing spaces could help distinct lyrics stand out even more.",
+            "The low-energy resolution at the ending creates a gentle landing, which might leave the final moment feeling slightly less impactful than the central climax."
+        ],
+        "studio_moves": [
+            "You could try trimming a few seconds off the 30-second intro to pull listeners into the core narrative faster.",
+            "Worth experimenting with carving out small micro-pauses in the dense lyrics just before the recurring 'demons start to roll' refrain.",
+            "You might try introducing a brief breakdown section right before the 75-second mark to make the climax hit with even stronger dynamic contrast.",
+            "Consider experimenting with a subtle dynamic swell around 70 seconds to build anticipation for the main climax zone.",
+            "It could be worth testing a punchier ending idea or lingering element during the low-energy resolution to leave a lasting impression."
+        ],
+        "big_picture": "The standout feature of this track is the dynamic punch of its central climax between 75.0s and 95.0s, supported by strong transient preservation and rich, dense storytelling. A key tradeoff is that the 30-second restrained intro and continuous block structure offer little structural interruption before settling into a low-energy resolution. The main opportunity lies in shaping macro-pacing by carving micro-pauses within the dense vocal lines and building a clearer dynamic ramp into the main climax. Focus your next pass on streamlining the opening section and sculpting a brief drop right before 75 seconds to give your main peak maximum impact.",
+        "engine": "gemini-3.6-flash"
+    }
+}

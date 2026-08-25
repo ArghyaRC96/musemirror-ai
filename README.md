@@ -1,380 +1,514 @@
-\# MuseMirror AI 🎧
+# MuseMirror AI V2
 
+Creator-side music intelligence that turns measurable audio evidence,
+song structure, and verified lyrics into grounded studio feedback.
 
+> MuseMirror calculates evidence first, then asks the generative layer
+> to reason from that evidence.
 
-MuseMirror AI is a creator-focused music analysis system that goes beyond raw audio feature extraction and attempts to interpret songs in a musically meaningful way.
+## Status
 
+**MuseMirror AI V2.0 - Feature Complete**
 
-
-It combines signal-level analysis, energy modeling, structural inference, transcription-based insights, and critique generation into a single end-to-end workflow.
-
-
-
-\---
-
-
-
-\## 🚀 Why this project?
-
-
-
-Most music analysis demos stop at low-level features like tempo, MFCC, or spectral descriptors.
-
-
-
-MuseMirror AI was built to go further:
-
-\- detect perceived tempo instead of blindly trusting raw detection  
-
-\- analyze how energy evolves across time  
-
-\- infer structural cues like intro, breakdown, climax, and ending  
-
-\- generate human-readable observations  
-
-\- provide creator-oriented critique  
-
-
-
-\---
-
-
-
-\## 🧠 Key Capabilities
-
-
-
-\### 🥁 Rhythm \& Tempo
-
-\- Raw tempo detection  
-
-\- Perceived tempo correction  
-
-\- Tempo ratio and tempo mode  
-
-
-
-\### 📈 Core Audio Features
-
-\- RMS energy  
-
-\- Spectral centroid  
-
-\- Zero crossing rate  
-
-
-
-\### 🎚️ Timbre \& Harmonic Features
-
-\- MFCC summaries  
-
-\- Chroma summaries  
-
-
-
-\### 🎤 Transcription Layer
-
-\- Whisper-based transcription  
-
-\- Segment cleaning  
-
-\- Lyric density estimation  
-
-\- Confidence proxy  
-
-
-
-\### ⚡ Energy Intelligence
-
-\- RMS percentiles  
-
-\- Energy variation score  
-
-\- Dynamic range classification  
-
-\- Climax strength score  
-
-\- Window-level energy analysis  
-
-\- Strong / Medium / Weak block detection  
-
-
-
-\### 🎼 Structure Intelligence
-
-\- Intro detection  
-
-\- Breakdown detection  
-
-\- Climax zone estimation  
-
-\- Ending type classification  
-
-
-
-\### 🧠 Interpretation Layer
-
-\- Key observations (human-readable)  
-
-\- Critique report:
-
-&#x20; - Strengths  
-
-&#x20; - Risks  
-
-&#x20; - Improvements  
-
-
-
-\### 📦 Export System
-
-\- Compact report JSON  
-
-\- Full archive JSON  
-
-\- Validation before export  
-
-
-
-\---
-
-
-
-\## 📂 Project Structure
-
-
+Current milestone:
 
 ```text
-
-musemirror-ai/
-
-├── notebooks/
-
-│   ├── MuseMirror\_V1.ipynb
-
-│   └── MuseMirror\_V1\_1.ipynb
-
-│
-
-├── sample\_outputs/
-
-│   ├── v1\_1/
-
-│   │   ├── json/
-
-│   │   └── screenshots/
-
-│   │
-
-│   └── v2/
-
-│       ├── json/
-
-│       └── screenshots/
-
-│
-
-├── assets/
-
-├── docs/
-
-├── .gitignore
-
-├── README.md
-
-└── requirements.txt
-
+V2 complete
+    ->
+GitHub release
+    ->
+Streamlit Community Cloud
+    ->
+Public portfolio demo
 ```
 
+## Live Demo
+
+Public Streamlit URL will be added after deployment.
+
+---
+
+## What MuseMirror Does
+
+MuseMirror analyzes an uploaded MP3 or WAV file using deterministic
+audio processing before involving an LLM.
+
+It then combines the measured audio evidence with user-verified lyrics
+to produce creator-facing feedback.
+
+The workflow is:
+
+```text
+Upload Audio
+     |
+     v
+Deterministic Audio Analysis
+     |
+     +--> Tempo
+     +--> Core Features
+     +--> Timbre / Harmonic Features
+     +--> RMS Energy
+     +--> Energy Windows
+     +--> Energy Blocks
+     +--> Structural Heuristics
+     +--> Climax Detection
+     |
+     v
+Gemini Lyrics Transcription
+     |
+     +--> Retry on temporary API failure
+     +--> Fallback model
+     |
+     v
+User Reviews Lyrics
+     |
+     v
+Verified Lyrics
+     |
+     v
+Grounded Evidence Package
+     |
+     v
+Gemini Vibe Check
+     |
+     v
+Grounding Validator
+     |
+     v
+Creator-Facing Feedback
+```
+
+---
+
+## V2 Features
+
+### Audio Intelligence
+
+MuseMirror currently analyzes:
+
+- raw tracker BPM
+- perceived BPM
+- RMS energy
+- dynamic range
+- energy variation
+- energy windows
+- strong / medium / low energy blocks
+- climax region
+- structural heuristics
+- core spectral features
+- timbre and harmonic features
+
+Audio measurements are calculated before LLM interpretation.
+
+### Real Track Energy Arc
+
+The V2 interface includes a real RMS-driven visualization with:
+
+- 256 timeline-distributed energy bars
+- static waveform geometry
+- full centered waveform appearance
+- animated cyan / violet / pink gradient flow
+- 20-second timeline intervals
+- exact final song timestamp
+- aligned waveform and timeline endpoints
+
+Only the colors animate.
+
+The waveform shape itself remains static.
+
+### Lyrics Intelligence
+
+Gemini processes the uploaded song and returns structured transcription
+data including:
+
+- detected language
+- lyric lines
+- approximate timestamps
+- complete transcription text
 
+Before the final Vibe Check, the user can manually correct the
+transcription and explicitly verify the lyrics.
 
-\---
+### API Reliability
 
+The transcription pipeline currently uses:
 
+```text
+gemini-3.7-flash
+        |
+        | temporary 503 / 429
+        v
+retry gemini-3.7-flash
+        |
+        | still unavailable
+        v
+gemini-3.6-flash
+```
 
-\## 📊 Example Output
+The Vibe Check generation pipeline also includes retry and fallback
+protection for temporary Gemini availability failures.
 
+---
 
+## Grounded Vibe Check
 
-MuseMirror AI produces structured outputs such as:
+MuseMirror's final creator critique contains exactly:
 
-\- perceived tempo  
+- 5 What's Hitting observations
+- 3 Needs a Little Love observations
+- 5 Studio Moves
+- 1 Big Picture reflection
 
-\- energy profile  
+The LLM receives a constrained evidence package instead of unrestricted
+access to make musical assumptions.
 
-\- structure summary  
+---
 
-\- key observations  
+## Hallucination Control
 
-\- critique report  
+MuseMirror deliberately prevents unsupported claims about:
 
-\- JSON exports  
+- instrumentation
+- genre
+- musical key
+- chord progression
+- unsupported mix decisions
+- unsupported arrangement details
+- double-time elements inferred only from BPM mathematics
+- half-time elements inferred only from BPM mathematics
 
+For example:
 
+```text
+raw tracker BPM: 160
+perceived BPM: 80
+```
 
-\---
+does not prove that the arrangement contains double-time musical
+elements.
 
+Tempo interpretation is treated as numerical evidence rather than
+arrangement evidence.
 
+---
 
-\## ⚙️ Tech Stack
+## Creator-Facing Interface
 
+The Streamlit V2 product includes:
 
+- premium dark-neon UI
+- audio upload
+- built-in audio player
+- Read My Song workflow
+- editable lyrics review
+- explicit lyric verification
+- Run the Vibe Check workflow
+- Track Declassified results
+- real Track Energy Arc
+- track fingerprint cards
+- What's Hitting
+- Needs a Little Love
+- Studio Moves
+- Big Picture
 
-\- Python  
+The Track Fingerprint currently surfaces:
 
-\- Librosa  
+- perceived BPM
+- climax zone
+- dynamic profile
+- strong / medium / low energy blocks
+
+---
+
+## Tech Stack
+
+### Application
+
+- Python
+- Streamlit
 
-\- NumPy  
+### Audio Analysis
 
-\- Pandas  
+- Librosa
+- NumPy
+- Pandas
+- SoundFile
+- Matplotlib
 
-\- Matplotlib  
+### Generative AI
 
-\- OpenAI Whisper  
+- Google Gemini API
+- Google GenAI Python SDK
 
-\- Google Colab  
+### Development
 
+- VS Code
+- Google Colab
+- Git
+- GitHub
 
+### Deployment
 
-\---
+- Streamlit Community Cloud
 
+---
 
+## Repository Structure
 
-\## 🧪 Versions
+```text
+musemirror-ai/
+|
+|-- app.py
+|-- musemirror_engine.py
+|-- styles.css
+|-- README.md
+|-- requirements.txt
+|-- .gitignore
+|
+|-- notebooks/
+|   |-- MuseMirror_AI_V1.ipynb
+|   |-- MuseMirror_AI_V1_1.ipynb
+|   `-- MuseMirror_AI_V2.ipynb
+|
+|-- sample_outputs/
+|   |-- v1_1/
+|   `-- v2/
+|
+|-- assets/
+|
+`-- docs/
+    |-- project_state.md
+    `-- build_log.md
+```
 
+---
 
+## Production Architecture
 
-\- \*\*V1\*\* → baseline pipeline  
+### app.py
 
-\- \*\*V1.1\*\* → refined version  
+Controls the Streamlit product experience:
 
+- upload workflow
+- audio playback
+- session state
+- lyric review
+- lyric verification
+- Vibe Check execution
+- final result rendering
 
+### musemirror_engine.py
 
-\---
+Contains the production analysis pipeline.
 
+Major functions include:
 
+```python
+load_audio()
+analyze_tempo()
+extract_core_features()
+extract_timbre_harmonic_features()
+analyze_energy_profile()
+analyze_energy_windows()
+classify_energy_blocks()
+analyze_sections()
+transcribe_lyrics()
+analyze_lyrics()
+build_observations()
+analyze_audio()
+validate_vibe_check_grounding()
+run_vibe_check()
+```
 
-\## ⚠️ Limitations
+### styles.css
 
+Contains MuseMirror's custom Streamlit visual system.
 
+---
 
-This system uses heuristic interpretation and should not be treated as absolute musical truth.
+## Run Locally
 
+Clone the repository:
 
+```bash
+git clone https://github.com/ArghyaRC96/musemirror-ai.git
+cd musemirror-ai
+```
 
-\- spectral centroid ≠ full brightness perception  
+Create a virtual environment:
 
-\- zero crossing rate ≠ distortion directly  
+```bash
+python -m venv .venv
+```
 
-\- structure inferred from energy  
+Activate it on Windows PowerShell:
 
-\- transcription depends on audio quality  
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
 
+Install dependencies:
 
+```bash
+pip install -r requirements.txt
+```
 
-\---
+Create a `.env` file in the repository root:
 
+```text
+GEMINI_API_KEY=your_api_key_here
+```
 
+Run MuseMirror:
 
-\## 👨‍💻 My Contribution
+```bash
+streamlit run app.py
+```
 
+Never commit `.env` or Streamlit secret files.
 
+---
 
-I designed the project direction, analysis goals, and system architecture.
+## Important Limitations
 
+MuseMirror intentionally avoids overstating what individual audio
+features can prove.
 
+### Tempo
 
-Used AI assistance for development, while making decisions on:
+Tempo does not determine emotion.
 
-\- feature selection  
+Raw BPM and perceived BPM are numerical interpretations rather than
+proof of arrangement style.
 
-\- interpretation logic  
+### Spectral Centroid
 
-\- pipeline structure  
+Spectral centroid alone is not treated as musical brightness.
 
-\- critique generation  
+### Zero-Crossing Rate
 
-\- output presentation  
+Zero-crossing rate alone is not treated as distortion, aggression,
+or heaviness.
 
+### Song Structure
 
+Detected structural regions are heuristic estimates rather than
+definitive verse, chorus, bridge, or breakdown labels.
 
-\---
+### Lyrics
 
+Gemini timestamps are approximate.
 
+The user verifies lyrics before they are used as evidence for the
+final critique.
 
-\## 🎯 Future Direction (V2)
+### Musical Semantics
 
+V2 intentionally avoids definitive claims about:
 
+- genre
+- key
+- chords
+- instrumentation
+- originality
+- song similarity
 
-\- smarter section detection  
+unless appropriate evidence exists.
 
-\- chorus vs verse energy comparison  
+---
 
-\- richer spectral features  
+## Project Evolution
 
-\- reference track comparison  
+### V1
 
-\- improved critique intelligence  
+Initial proof of concept covering:
 
+- tempo
+- MFCC
+- chroma
+- RMS
+- spectral centroid
+- zero-crossing rate
+- transcription
+- early creator-feedback heuristics
 
+### V1.1
 
-\---
+Expanded the evidence layer with:
 
+- improved tempo interpretation
+- richer RMS statistics
+- energy windows
+- energy curves
+- timbre analysis
+- structured reports
+- clearer feature limitations
 
+### V2
 
-\## 📌 Goal
+Converted MuseMirror into a portfolio-ready AI product with:
 
+- production Python engine
+- Streamlit application
+- Gemini multimodal transcription
+- lyric verification
+- API retry and fallback
+- grounded Vibe Check
+- hallucination validation
+- real RMS energy visualization
+- adaptive timeline
+- creator-facing interface
 
+---
 
-To build a creator-focused music intelligence system.
+## Engineering Principles
 
+### Evidence Before Generation
 
+Audio signal processing happens before LLM interpretation.
 
-\---
+### Human Verification
 
+Lyrics are reviewed before becoming trusted evidence.
 
+### Constrained Generative AI
 
-\## 📸 Sample Outputs
+The LLM is prevented from freely inventing musical facts.
 
+### Graceful API Failure
 
+Temporary model failures trigger retry and fallback behavior.
 
-### Audio Properties
+### Creator-Side Feedback
 
-<img src="sample_outputs/v1_1/screenshots/audio_properties.png" width="900">
+MuseMirror provides observations and experiments rather than pretending
+to provide absolute musical truth.
 
-### Waveform
+---
 
-<img src="sample_outputs/v1_1/screenshots/waveform_visualization.png" width="900">
+## Portfolio Value
 
-### Rhythm Analysis
+MuseMirror demonstrates practical experience with:
 
-<img src="sample_outputs/v1_1/screenshots/rhythm_core_analysis.png" width="900">
+- audio signal processing
+- multimodal generative AI
+- structured LLM outputs
+- prompt engineering
+- grounding and hallucination control
+- API resilience
+- Streamlit application development
+- session-state management
+- product UX
+- deployment-oriented engineering
 
-### Timbre Features
+---
 
-<img src="sample_outputs/v1_1/screenshots/timbre_harmonic_features.png" width="900">
+## Current Version
 
-### Transcription
+**MuseMirror AI V2.0**
 
-<img src="sample_outputs/v1_1/screenshots/transcription_intelligence.png" width="900">
+Feature development complete.
 
-### Energy
+Next milestone:
 
-<img src="sample_outputs/v1_1/screenshots/energy_intelligence.png" width="900">
-
-### Energy Blocks
-
-<img src="sample_outputs/v1_1/screenshots/energy_block_classification.png" width="900">
-
-### Observations
-
-<img src="sample_outputs/v1_1/screenshots/key_observations.png" width="900">
-
-### Critique
-
-<img src="sample_outputs/v1_1/screenshots/final_critique_report.png" width="900">
-
-### Final Report
-
-<img src="sample_outputs/v1_1/screenshots/song_analysis_report.png" width="900">
-
+**Public Streamlit deployment.**

@@ -28,3 +28,12 @@ Thumbs.db
 
 # Logs
 *.log
+
+# MuseMirror local recovery files
+app.py*.bak
+styles.css*.bak
+.recovery/
+
+# Local environment and recovery files
+.streamlit/secrets.toml
+*.pyc
