@@ -1249,7 +1249,7 @@ def transcribe_lyrics(
     #
     # Policy:
     # - gemini-3.6-flash
-    # - 30 second HTTP timeout from musemirror_runtime
+    # - 45 second HTTP timeout from musemirror_runtime
     # - exactly one retry
     # - fresh audio upload for every attempt
     # ----------------------------------------

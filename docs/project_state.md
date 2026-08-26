@@ -326,3 +326,29 @@ MuseMirror AI V2 is now:
 Public application:
 
 https://musemirror-ai.streamlit.app/
+
+## 2026-08-26 - Gemini Runtime Performance Hardening
+
+MuseMirror AI V2 received a production runtime optimization focused on Gemini latency, reliability, and framework independence.
+
+- Centralized Gemini configuration in `musemirror_runtime.py`.
+- Core Gemini runtime is independent of Streamlit.
+- Transcription now uses `gemini-3.6-flash` exclusively.
+- Vibe Check now uses `gemini-3.6-flash` exclusively.
+- Gemini request timeout increased to 45 seconds per HTTP request.
+- Transcription allows exactly one retry and performs a fresh audio upload for the retry.
+- Vibe Check allows exactly one retry.
+- Previous Gemini 3.7 primary/fallback model chain was removed.
+- Existing audio analysis, lyric verification, grounding validation, Vibe Check structure, and UI remain unchanged.
+- Live deployment successfully processed the previously problematic Bengali-song test with substantially improved responsiveness.
+
+Current Gemini policy:
+
+```text
+Model: gemini-3.6-flash
+Timeout: 45 seconds per request
+Transcription retries: 1
+Vibe Check retries: 1
+Fallback model: none
+Core Streamlit dependency: none
+```

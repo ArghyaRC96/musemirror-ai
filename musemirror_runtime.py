@@ -4,7 +4,7 @@ from google.genai import types
 
 MUSEMIRROR_MODEL = "gemini-3.6-flash"
 
-GEMINI_TIMEOUT_MS = 30_000
+GEMINI_TIMEOUT_MS = 45_000
 
 
 def build_gemini_client(api_key):

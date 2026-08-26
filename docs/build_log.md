@@ -552,3 +552,21 @@ MuseMirror AI V2 is publicly available and portfolio ready.
 Live application:
 
 https://musemirror-ai.streamlit.app/
+
+### 2026-08-26 - Runtime latency and resilience update
+
+Implemented and validated a simplified Gemini execution policy for MuseMirror AI V2.
+
+Changes:
+- Added Streamlit-independent `musemirror_runtime.py`.
+- Standardized transcription and Vibe Check on `gemini-3.6-flash`.
+- Removed the Gemini 3.7 -> 3.6 fallback chain.
+- Added one retry for transcription.
+- Added one retry for Vibe Check.
+- Transcription retries use a fresh Gemini Files upload.
+- Increased Gemini client timeout from 30 seconds to 45 seconds per request.
+- Preserved existing prompts, grounding logic, correction flow, audio-analysis pipeline, and frontend behavior.
+- UTF-8-safe patching and Python syntax validation were used throughout.
+- Live Bengali-song test completed quickly after the optimization.
+
+Result: MuseMirror now has a simpler, faster, and more predictable production inference path.
