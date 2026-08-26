@@ -23,6 +23,7 @@ from musemirror_engine import (
     build_observations,
     run_vibe_check
 )
+from musemirror_runtime import build_gemini_client, MUSEMIRROR_MODEL
 
 
 # --------------------------------------------
@@ -72,11 +73,9 @@ if not GEMINI_API_KEY:
     st.stop()
 
 
-gemini_client = genai.Client(
-    api_key=GEMINI_API_KEY
-)
+gemini_client = build_gemini_client(GEMINI_API_KEY)
 
-GEMINI_MODEL = "gemini-3.7-flash"
+GEMINI_MODEL = MUSEMIRROR_MODEL
 
 
 # --------------------------------------------

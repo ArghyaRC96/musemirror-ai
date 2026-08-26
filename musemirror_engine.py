@@ -1152,7 +1152,7 @@ def analyze_sections(
 def transcribe_lyrics(
     file_path,
     gemini_client,
-    model_name="gemini-3.7-flash"
+    model_name="gemini-3.6-flash"
 ):
     """
     Transcribe sung/spoken lyrics using Gemini.
@@ -1162,13 +1162,11 @@ def transcribe_lyrics(
     """
 
     # ----------------------------------------
-    # Upload audio to Gemini
+    # Gemini audio upload
+    #
+    # Upload happens inside the request loop so a retry
+    # always starts with a fresh upload session.
     # ----------------------------------------
-
-    audio_file = gemini_client.files.upload(
-        file=file_path
-    )
-
 
     # ----------------------------------------
     # Structured response schema
@@ -1248,31 +1246,27 @@ def transcribe_lyrics(
 
     # ----------------------------------------
     # Run Gemini
+    #
+    # Policy:
+    # - gemini-3.6-flash
+    # - 30 second HTTP timeout from musemirror_runtime
+    # - exactly one retry
+    # - fresh audio upload for every attempt
     # ----------------------------------------
 
-    fallback_model = "gemini-3.6-flash"
-
-    transient_error_terms = (
-        "503",
-        "unavailable",
-        "high demand",
-        "429",
-        "resource_exhausted",
-        "resource exhausted"
-    )
-
-    model_used = model_name
     response = None
-    primary_error = None
+    last_error = None
+    model_used = model_name
 
-
-    # ----------------------------------------
-    # Try primary model twice
-    # ----------------------------------------
 
     for attempt in range(2):
 
         try:
+
+            audio_file = gemini_client.files.upload(
+                file=file_path
+            )
+
 
             response = gemini_client.models.generate_content(
 
@@ -1289,33 +1283,14 @@ def transcribe_lyrics(
                 )
             )
 
-            model_used = model_name
 
             break
 
 
         except Exception as exc:
 
-            primary_error = exc
+            last_error = exc
 
-            error_text = str(
-                exc
-            ).lower()
-
-            is_transient = any(
-                term in error_text
-                for term in transient_error_terms
-            )
-
-
-            # Non-temporary errors should not be silently
-            # disguised as model-capacity problems.
-
-            if not is_transient:
-                raise
-
-
-            # Retry the primary model once.
 
             if attempt == 0:
 
@@ -1324,40 +1299,12 @@ def transcribe_lyrics(
                 )
 
 
-    # ----------------------------------------
-    # Fall back if primary stayed unavailable
-    # ----------------------------------------
-
     if response is None:
 
-        try:
-
-            response = gemini_client.models.generate_content(
-
-                model=fallback_model,
-
-                contents=[
-                    audio_file,
-                    transcription_prompt
-                ],
-
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    response_schema=transcription_schema
-                )
-            )
-
-            model_used = fallback_model
-
-
-        except Exception as fallback_error:
-
-            raise RuntimeError(
-                "MuseMirror could not transcribe the lyrics "
-                "because both Gemini transcription models "
-                "are temporarily unavailable. "
-                "Please try again shortly."
-            ) from fallback_error
+        raise RuntimeError(
+            "MuseMirror could not transcribe the lyrics "
+            "after one retry."
+        ) from last_error
 
 
     # ----------------------------------------
@@ -2436,8 +2383,8 @@ def run_vibe_check(
     verified_lyrics,
     observations,
     gemini_client,
-    model_name="gemini-3.7-flash",
-    fallback_model_name="gemini-3.6-flash",
+    model_name="gemini-3.6-flash",
+    fallback_model_name=None,
     max_retries=2
 ):
     """
@@ -2779,78 +2726,40 @@ Here is the MuseMirror evidence:
         attempts=2
     ):
 
-        models_to_try = [
-            primary_model
-        ]
-
-        if (
-            fallback_model
-            and fallback_model != primary_model
-        ):
-
-            models_to_try.append(
-                fallback_model
-            )
-
-
         last_error = None
 
 
-        for current_model in models_to_try:
+        for attempt in range(2):
 
-            # Primary model gets retries.
-            # Fallback gets one attempt.
-            current_attempts = (
-                attempts
-                if current_model == primary_model
-                else 1
-            )
+            try:
+
+                response = call_gemini(
+                    primary_model,
+                    prompt_text
+                )
 
 
-            for attempt in range(
-                1,
-                current_attempts + 1
-            ):
+                return (
+                    response,
+                    primary_model
+                )
 
-                try:
 
-                    response = call_gemini(
-                        current_model,
-                        prompt_text
+            except Exception as error:
+
+                last_error = error
+
+
+                if attempt == 0:
+
+                    time.sleep(
+                        1
                     )
-
-                    return (
-                        response,
-                        current_model
-                    )
-
-
-                except Exception as error:
-
-                    last_error = error
-
-
-                    if not is_retryable_error(
-                        error
-                    ):
-                        raise
-
-
-                    if attempt < current_attempts:
-
-                        wait_seconds = (
-                            2 ** (attempt - 1)
-                        )
-
-                        time.sleep(
-                            wait_seconds
-                        )
 
 
         raise RuntimeError(
-            "Gemini is temporarily busy. "
-            "MuseMirror couldn't refresh the Vibe Check "
-            "right now. Please try again shortly."
+            "Gemini could not generate the Vibe Check "
+            "after one retry."
         ) from last_error
 
 
