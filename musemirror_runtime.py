@@ -2,7 +2,11 @@ from google import genai
 from google.genai import types
 
 
-MUSEMIRROR_MODEL = "gemini-3.6-flash"
+MUSEMIRROR_TRANSCRIPTION_MODEL = "gemini-3.5-transcribe"
+MUSEMIRROR_VIBE_MODEL = "gemini-3.6-flash"
+
+# Backwards-compatible alias for creator-side generation.
+MUSEMIRROR_MODEL = MUSEMIRROR_VIBE_MODEL
 
 GEMINI_TIMEOUT_MS = 45_000
 

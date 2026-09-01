@@ -1152,106 +1152,386 @@ def analyze_sections(
 def transcribe_lyrics(
     file_path,
     gemini_client,
-    model_name="gemini-3.6-flash"
+    model_name="gemini-3.5-transcribe"
 ):
     """
-    Transcribe sung/spoken lyrics using Gemini.
+    Transcribe song vocals with Gemini 3.5 Transcribe.
 
-    Returns a MuseMirror-compatible transcription
-    object with lyric lines and approximate timestamps.
-    """
-
-    # ----------------------------------------
-    # Gemini audio upload
-    #
-    # Upload happens inside the request loop so a retry
-    # always starts with a fresh upload session.
-    # ----------------------------------------
-
-    # ----------------------------------------
-    # Structured response schema
-    # ----------------------------------------
-
-    transcription_schema = {
-        "type": "OBJECT",
-
-        "properties": {
-
-            "detected_language": {
-                "type": "STRING"
-            },
-
-            "segments": {
-                "type": "ARRAY",
-
-                "items": {
-                    "type": "OBJECT",
-
-                    "properties": {
-
-                        "start_sec": {
-                            "type": "NUMBER"
-                        },
-
-                        "end_sec": {
-                            "type": "NUMBER"
-                        },
-
-                        "text": {
-                            "type": "STRING"
-                        }
-                    },
-
-                    "required": [
-                        "start_sec",
-                        "end_sec",
-                        "text"
-                    ]
-                }
-            }
-        },
-
-        "required": [
-            "detected_language",
-            "segments"
-        ]
-    }
-
-
-    # ----------------------------------------
-    # Transcription prompt
-    # ----------------------------------------
-
-    transcription_prompt = """
-    Transcribe the sung or spoken lyrics in this song.
-
-    Rules:
-
-    1. Transcribe only words that are actually audible.
-    2. Preserve the wording exactly as heard.
-    3. Do not rewrite lyrics for grammar or style.
-    4. Preserve repeated lyrics.
-    5. If something is genuinely unclear, write [unclear].
-    6. Do not invent lyrics.
-    7. Ignore purely instrumental sections.
-    8. Break the transcription into natural lyric lines.
-    9. Give an approximate start and end time in seconds
-       for each lyric line.
-    10. Detect the primary language of the vocals.
-
-    The timestamps are approximate and must not be treated
-    as exact musical ground truth.
+    The dedicated transcription response is adapted into
+    MuseMirror's existing transcription contract so the
+    downstream lyric-review pipeline remains unchanged.
     """
 
 
     # ----------------------------------------
-    # Run Gemini
+    # Offset parser
+    # ----------------------------------------
+
+    def offset_to_seconds(value):
+
+        if value is None:
+            return None
+
+
+        if hasattr(
+            value,
+            "total_seconds"
+        ):
+
+            try:
+                return float(
+                    value.total_seconds()
+                )
+
+            except Exception:
+                pass
+
+
+        text_value = str(
+            value
+        ).strip()
+
+
+        if text_value.endswith("s"):
+
+            text_value = text_value[:-1]
+
+
+        try:
+
+            return float(
+                text_value
+            )
+
+        except (
+            TypeError,
+            ValueError
+        ):
+
+            return None
+
+
+    # ----------------------------------------
+    # Join transcribed word tokens cleanly
+    # ----------------------------------------
+
+    def join_words(words):
+
+        text_value = " ".join(
+            word.strip()
+            for word in words
+            if word and word.strip()
+        )
+
+
+        for punctuation in [
+            ".",
+            ",",
+            "!",
+            "?",
+            ";",
+            ":",
+        ]:
+
+            text_value = text_value.replace(
+                " " + punctuation,
+                punctuation
+            )
+
+
+        return text_value.strip()
+
+
+    # ----------------------------------------
+    # Extract dedicated transcription metadata
+    # ----------------------------------------
+
+    def extract_word_records(
+        response
+    ):
+
+        records = []
+
+        detected_language = (
+            "auto-detected"
+        )
+
+
+        for candidate in (
+            getattr(
+                response,
+                "candidates",
+                None
+            )
+            or []
+        ):
+
+            content = getattr(
+                candidate,
+                "content",
+                None
+            )
+
+
+            for part in (
+                getattr(
+                    content,
+                    "parts",
+                    None
+                )
+                or []
+            ):
+
+                transcription = getattr(
+                    part,
+                    "audio_transcription",
+                    None
+                )
+
+
+                if transcription is None:
+                    continue
+
+
+                language_code = getattr(
+                    transcription,
+                    "language_code",
+                    None
+                )
+
+
+                if language_code:
+
+                    detected_language = str(
+                        language_code
+                    )
+
+
+                for word_info in (
+                    getattr(
+                        transcription,
+                        "words",
+                        None
+                    )
+                    or []
+                ):
+
+                    word = (
+                        getattr(
+                            word_info,
+                            "word",
+                            ""
+                        )
+                        or ""
+                    ).strip()
+
+
+                    if not word:
+                        continue
+
+
+                    start_sec = offset_to_seconds(
+                        getattr(
+                            word_info,
+                            "start_offset",
+                            None
+                        )
+                    )
+
+
+                    end_sec = offset_to_seconds(
+                        getattr(
+                            word_info,
+                            "end_offset",
+                            None
+                        )
+                    )
+
+
+                    records.append({
+                        "word":
+                            word,
+
+                        "start_sec":
+                            start_sec,
+
+                        "end_sec":
+                            end_sec
+                    })
+
+
+        return (
+            records,
+            detected_language
+        )
+
+
+    # ----------------------------------------
+    # Convert word timestamps into approximate
+    # lyric-line segments.
     #
-    # Policy:
-    # - gemini-3.6-flash
-    # - 45 second HTTP timeout from musemirror_runtime
+    # A meaningful pause OR 12 words closes a line.
+    # This preserves the old MuseMirror segment contract.
+    # ----------------------------------------
+
+    def build_timed_segments(
+        word_records
+    ):
+
+        segments = []
+
+        current_words = []
+
+        current_start = None
+
+        previous_end = None
+
+
+        def flush_segment():
+
+            nonlocal current_words
+            nonlocal current_start
+            nonlocal previous_end
+
+
+            if not current_words:
+                return
+
+
+            segment_text = join_words(
+                [
+                    item["word"]
+                    for item in current_words
+                ]
+            )
+
+
+            valid_starts = [
+                item["start_sec"]
+                for item in current_words
+                if item["start_sec"] is not None
+            ]
+
+
+            valid_ends = [
+                item["end_sec"]
+                for item in current_words
+                if item["end_sec"] is not None
+            ]
+
+
+            start_sec = (
+                valid_starts[0]
+                if valid_starts
+                else 0.0
+            )
+
+
+            end_sec = (
+                valid_ends[-1]
+                if valid_ends
+                else start_sec
+            )
+
+
+            if end_sec < start_sec:
+                end_sec = start_sec
+
+
+            if segment_text:
+
+                segments.append({
+                    "start_sec":
+                        float(start_sec),
+
+                    "end_sec":
+                        float(end_sec),
+
+                    "duration_sec":
+                        float(
+                            end_sec
+                            - start_sec
+                        ),
+
+                    "text":
+                        segment_text
+                })
+
+
+            current_words = []
+            current_start = None
+            previous_end = None
+
+
+        for record in word_records:
+
+            start_sec = record[
+                "start_sec"
+            ]
+
+
+            gap_sec = None
+
+
+            if (
+                start_sec is not None
+                and previous_end is not None
+            ):
+
+                gap_sec = (
+                    start_sec
+                    - previous_end
+                )
+
+
+            should_break = (
+                bool(current_words)
+                and (
+                    len(current_words) >= 12
+                    or (
+                        gap_sec is not None
+                        and gap_sec >= 1.10
+                    )
+                )
+            )
+
+
+            if should_break:
+                flush_segment()
+
+
+            current_words.append(
+                record
+            )
+
+
+            if current_start is None:
+                current_start = start_sec
+
+
+            if record["end_sec"] is not None:
+
+                previous_end = record[
+                    "end_sec"
+                ]
+
+
+        flush_segment()
+
+
+        return segments
+
+
+    # ----------------------------------------
+    # Gemini request
+    #
+    # Runtime policy:
+    # - gemini-3.5-transcribe
+    # - automatic language detection
+    # - word timestamps
+    # - 45 second HTTP timeout from runtime
     # - exactly one retry
-    # - fresh audio upload for every attempt
+    # - fresh upload for every attempt
     # ----------------------------------------
 
     response = None
@@ -1263,23 +1543,32 @@ def transcribe_lyrics(
 
         try:
 
-            audio_file = gemini_client.files.upload(
-                file=file_path
+            audio_file = (
+                gemini_client.files.upload(
+                    file=file_path
+                )
             )
 
 
-            response = gemini_client.models.generate_content(
+            response = (
+                gemini_client.models.generate_content(
 
-                model=model_name,
+                    model=model_name,
 
-                contents=[
-                    audio_file,
-                    transcription_prompt
-                ],
+                    contents=[
+                        audio_file
+                    ],
 
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    response_schema=transcription_schema
+                    config=types.GenerateContentConfig(
+
+                        audio_transcription_config=
+                            types.AudioTranscriptionConfig(
+
+                                language_codes=[],
+
+                                word_timestamp=True
+                            )
+                    )
                 )
             )
 
@@ -1308,69 +1597,114 @@ def transcribe_lyrics(
 
 
     # ----------------------------------------
-    # Parse Gemini response
+    # Parse dedicated transcription response
     # ----------------------------------------
 
-    gemini_transcription = json.loads(
-        response.text
-    )
-
-    raw_segments = gemini_transcription.get(
-        "segments",
-        []
-    )
-
-
-    transcript_segments = []
-    transcript_lines = []
-
-
-    for segment in raw_segments:
-
-        text = segment.get(
+    raw_text = (
+        getattr(
+            response,
             "text",
             ""
-        ).strip()
-
-        start_sec = float(
-            segment.get(
-                "start_sec",
-                0.0
-            )
         )
+        or ""
+    ).strip()
 
-        end_sec = float(
-            segment.get(
-                "end_sec",
-                start_sec
-            )
+
+    (
+        word_records,
+        detected_language
+    ) = extract_word_records(
+        response
+    )
+
+
+    transcript_segments = (
+        build_timed_segments(
+            word_records
         )
-
-
-        # Prevent invalid negative duration
-        if end_sec < start_sec:
-            end_sec = start_sec
-
-
-        if text:
-
-            transcript_segments.append({
-                "start_sec": start_sec,
-                "end_sec": end_sec,
-
-                "duration_sec":
-                    end_sec - start_sec,
-
-                "text": text
-            })
-
-            transcript_lines.append(
-                text
-            )
+        if word_records
+        else []
+    )
 
 
     # ----------------------------------------
-    # MuseMirror transcription object
+    # Preferred lyric lines:
+    # timed word groups when available
+    # ----------------------------------------
+
+    transcript_lines = [
+        segment["text"]
+        for segment in transcript_segments
+        if segment.get(
+            "text"
+        )
+    ]
+
+
+    # ----------------------------------------
+    # Fallback:
+    # use the model's complete transcript text
+    # if timestamp annotations are unavailable.
+    # ----------------------------------------
+
+    if not transcript_lines:
+
+        transcript_lines = [
+            line.strip()
+            for line in raw_text.splitlines()
+            if line.strip()
+        ]
+
+
+    # Some transcripts may arrive as one paragraph.
+    # Preserve it rather than inventing missing lyrics.
+
+    full_text = "\n".join(
+        transcript_lines
+    ).strip()
+
+
+    if not full_text:
+
+        full_text = raw_text
+
+
+    if not full_text:
+
+        raise RuntimeError(
+            "Gemini returned an empty transcription."
+        )
+
+
+    # ----------------------------------------
+    # If timestamp annotations were absent,
+    # preserve the old segments contract.
+    # ----------------------------------------
+
+    if not transcript_segments:
+
+        transcript_segments = [
+
+            {
+                "start_sec":
+                    0.0,
+
+                "end_sec":
+                    0.0,
+
+                "duration_sec":
+                    0.0,
+
+                "text":
+                    line
+            }
+
+            for line in transcript_lines
+        ]
+
+
+    # ----------------------------------------
+    # MuseMirror-compatible transcription object
     # ----------------------------------------
 
     transcription_analysis = {
@@ -1382,16 +1716,17 @@ def transcribe_lyrics(
             "Google Gemini",
 
         "detected_language":
-            gemini_transcription.get(
-                "detected_language",
-                "unknown"
-            ),
+            detected_language,
 
         "num_segments":
-            len(transcript_segments),
+            len(
+                transcript_segments
+            ),
 
         "num_lines":
-            len(transcript_lines),
+            len(
+                transcript_lines
+            ),
 
         "lines":
             transcript_lines,
@@ -1400,9 +1735,7 @@ def transcribe_lyrics(
             transcript_segments,
 
         "full_text":
-            "\n".join(
-                transcript_lines
-            ).strip(),
+            full_text,
 
         "timestamps_are_approximate":
             True
@@ -1410,6 +1743,7 @@ def transcribe_lyrics(
 
 
     return transcription_analysis
+
 
 # ============================================
 # LYRICS INTELLIGENCE

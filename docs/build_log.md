@@ -570,3 +570,28 @@ Changes:
 - Live Bengali-song test completed quickly after the optimization.
 
 Result: MuseMirror now has a simpler, faster, and more predictable production inference path.
+
+<!-- BUILD_2026-09-01_RELIABILITY_RELEASE -->
+
+## 2026-09-01 - MuseMirror V2 Reliability Release
+
+Completed production-style reliability hardening before interview use.
+
+Changes completed:
+
+- Upgraded and pinned `google-genai` to 2.20.0.
+- Migrated lyric transcription to `gemini-3.5-transcribe`.
+- Kept `gemini-3.6-flash` as the grounded Vibe Check model.
+- Added a 45-second Gemini client timeout.
+- Limited both AI stages to one retry.
+- Preserved fresh-upload retry behavior for transcription.
+- Added independent deterministic-audio, transcription, and Vibe Check caching.
+- Added graceful degradation for transcription failures.
+- Preserved deterministic analysis when downstream AI fails.
+- Verified Streamlit-independent engine/runtime architecture.
+- Built and tested a local precomputed regression fixture using genuine MuseMirror output and real RMS frames.
+- Removed the visible Demo Mode from the public application before release.
+- Passed syntax, UTF-8, model, dependency, cache, AI-call-path, and Git whitespace validation.
+- Passed a real-song local end-to-end Streamlit test.
+
+Release state: ready for GitHub push and Streamlit redeployment.

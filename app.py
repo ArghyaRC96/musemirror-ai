@@ -3,6 +3,7 @@
 # Visual Shell V2
 # ============================================
 
+import hashlib
 import html
 from pathlib import Path
 import streamlit as st
@@ -23,7 +24,11 @@ from musemirror_engine import (
     build_observations,
     run_vibe_check
 )
-from musemirror_runtime import build_gemini_client, MUSEMIRROR_MODEL
+from musemirror_runtime import (
+    build_gemini_client,
+    MUSEMIRROR_TRANSCRIPTION_MODEL,
+    MUSEMIRROR_VIBE_MODEL
+)
 
 
 # --------------------------------------------
@@ -75,7 +80,8 @@ if not GEMINI_API_KEY:
 
 gemini_client = build_gemini_client(GEMINI_API_KEY)
 
-GEMINI_MODEL = MUSEMIRROR_MODEL
+GEMINI_TRANSCRIPTION_MODEL = MUSEMIRROR_TRANSCRIPTION_MODEL
+GEMINI_MODEL = MUSEMIRROR_VIBE_MODEL
 
 
 # --------------------------------------------
@@ -340,90 +346,453 @@ if uploaded_file is not None:
                 "Peeking under the hood..."
             ):
 
-                analysis_result, visual_data = (
-                    analyze_audio(
-                        temp_file_path
+                # ----------------------------------------
+                # Song fingerprint
+                #
+                # The temporary filename may change across
+                # reruns, so cache identity is based on the
+                # actual audio bytes instead.
+                # ----------------------------------------
+
+                song_hasher = hashlib.sha256()
+
+
+                with open(
+                    temp_file_path,
+                    "rb"
+                ) as audio_stream:
+
+                    for chunk in iter(
+                        lambda: audio_stream.read(
+                            1024 * 1024
+                        ),
+                        b""
+                    ):
+
+                        song_hasher.update(
+                            chunk
+                        )
+
+
+                current_song_hash = (
+                    song_hasher.hexdigest()
+                )
+
+
+
+                cached_song_hash = (
+                    st.session_state.get(
+                        "song_hash"
                     )
                 )
+
+
+                # ----------------------------------------
+                # Reuse deterministic analysis
+                # ----------------------------------------
+
+                analysis_is_cached = (
+                    cached_song_hash
+                    == current_song_hash
+                    and "analysis_result"
+                        in st.session_state
+                    and "visual_data"
+                        in st.session_state
+                )
+
+
+                if analysis_is_cached:
+
+                    analysis_result = (
+                        st.session_state[
+                            "analysis_result"
+                        ]
+                    )
+
+                    visual_data = (
+                        st.session_state[
+                            "visual_data"
+                        ]
+                    )
+
+
+                else:
+
+                    # ----------------------------------------
+                    # New song:
+                    # run deterministic analysis once
+                    # ----------------------------------------
+
+                    analysis_result, visual_data = (
+                        analyze_audio(
+                            temp_file_path
+                        )
+                    )
+
+
+                    # ----------------------------------------
+                    # Store deterministic stage IMMEDIATELY
+                    #
+                    # This happens before transcription.
+                    # Therefore a Gemini failure cannot erase
+                    # successful audio analysis.
+                    # ----------------------------------------
+
+                    st.session_state[
+                        "song_hash"
+                    ] = current_song_hash
+
+                    st.session_state[
+                        "analysis_result"
+                    ] = analysis_result
+
+                    st.session_state[
+                        "visual_data"
+                    ] = visual_data
+
+
+                    # ----------------------------------------
+                    # New song invalidates downstream AI state
+                    # ----------------------------------------
+
+                    downstream_keys = [
+                        "transcription_analysis",
+                        "transcription_intelligence",
+                        "lyrics_verification",
+                        "edited_lyrics",
+                        "lyrics_editor",
+                        "verified_lyrics",
+                        "lyrics_verified",
+                        "observations",
+                        "vibe_check",
+                        "transcription_song_hash",
+                        "vibe_check_cache_key",
+                    ]
+
+
+                    for key in downstream_keys:
+
+                        st.session_state.pop(
+                            key,
+                            None
+                        )
 
 
             # ----------------------------------------
             # 2. Gemini lyrics transcription
             # ----------------------------------------
 
-            with st.spinner(
-                "Catching the words 🎙️"
-            ):
+            transcription_failed = False
 
-                transcription_analysis = (
-                    transcribe_lyrics(
-                        temp_file_path,
-                        gemini_client,
-                        model_name=GEMINI_MODEL
+
+            try:
+
+                with st.spinner(
+                    "Catching the words 🎙️"
+                ):
+
+                    # ----------------------------------------
+                    # Reuse successful transcription
+                    #
+                    # Same song + successful prior transcription
+                    # means Gemini is NOT called again.
+                    # ----------------------------------------
+
+                    transcription_is_cached = (
+                        st.session_state.get(
+                            "transcription_song_hash"
+                        )
+                        == current_song_hash
+                        and "transcription_analysis"
+                            in st.session_state
+                    )
+
+
+                    if transcription_is_cached:
+
+                        transcription_analysis = (
+                            st.session_state[
+                                "transcription_analysis"
+                            ]
+                        )
+
+
+                    else:
+
+                        transcription_analysis = (
+                            transcribe_lyrics(
+                                temp_file_path,
+                                gemini_client,
+                                model_name=
+                                    GEMINI_TRANSCRIPTION_MODEL
+                            )
+                        )
+
+
+                        # ----------------------------------------
+                        # Store immediately after success
+                        #
+                        # Even if a later stage fails, this
+                        # transcription remains reusable.
+                        # ----------------------------------------
+
+                        st.session_state[
+                            "transcription_analysis"
+                        ] = transcription_analysis
+
+                        st.session_state[
+                            "transcription_song_hash"
+                        ] = current_song_hash
+
+                st.session_state[
+                    "audio_only_mode"
+                ] = False
+
+                st.session_state.pop(
+                    "transcription_error",
+                    None
+                )
+
+
+            except Exception as transcription_error:
+
+                transcription_failed = True
+
+                st.session_state[
+                    "audio_only_mode"
+                ] = True
+
+                st.session_state[
+                    "transcription_error"
+                ] = str(
+                    transcription_error
+                )
+
+
+            if not transcription_failed:
+
+
+
+                # ----------------------------------------
+                # 3. Lyrics intelligence
+                # ----------------------------------------
+
+                (
+                    transcription_intelligence,
+                    lyrics_verification
+                ) = analyze_lyrics(
+                    transcription_analysis
+                )
+
+
+                # ----------------------------------------
+                # Store results across Streamlit reruns
+                # ----------------------------------------
+
+                st.session_state[
+                    "analysis_result"
+                ] = analysis_result
+
+                st.session_state[
+                    "visual_data"
+                ] = visual_data
+
+                st.session_state[
+                    "transcription_analysis"
+                ] = transcription_analysis
+
+                st.session_state[
+                    "transcription_intelligence"
+                ] = transcription_intelligence
+
+                st.session_state[
+                    "lyrics_verification"
+                ] = lyrics_verification
+
+                st.session_state[
+                    "edited_lyrics"
+                ] = transcription_analysis[
+                    "full_text"
+                ]
+
+                st.session_state[
+                    "lyrics_editor"
+                ] = transcription_analysis[
+                    "full_text"
+                ]
+
+                st.session_state[
+                    "lyrics_verified"
+                ] = False
+
+                st.session_state[
+                    "vibe_check"
+                ] = None
+
+
+                st.success(
+                    "Track read successfully ⚡"
+                )
+
+
+            else:
+
+                st.warning(
+                    "AI transcription is temporarily unavailable. "
+                    "Your audio analysis completed successfully."
+                )
+
+
+                fallback_rhythm = (
+                    analysis_result.get(
+                        "rhythm",
+                        {}
+                    )
+                )
+
+                fallback_energy = (
+                    analysis_result.get(
+                        "energy",
+                        {}
+                    ).get(
+                        "profile",
+                        {}
+                    )
+                )
+
+                fallback_structure = (
+                    analysis_result.get(
+                        "structure",
+                        {}
+                    )
+                )
+
+                fallback_audio_info = (
+                    analysis_result.get(
+                        "audio_info",
+                        {}
                     )
                 )
 
 
-            # ----------------------------------------
-            # 3. Lyrics intelligence
-            # ----------------------------------------
-
-            (
-                transcription_intelligence,
-                lyrics_verification
-            ) = analyze_lyrics(
-                transcription_analysis
-            )
-
-
-            # ----------------------------------------
-            # Store results across Streamlit reruns
-            # ----------------------------------------
-
-            st.session_state[
-                "analysis_result"
-            ] = analysis_result
-
-            st.session_state[
-                "visual_data"
-            ] = visual_data
-
-            st.session_state[
-                "transcription_analysis"
-            ] = transcription_analysis
-
-            st.session_state[
-                "transcription_intelligence"
-            ] = transcription_intelligence
-
-            st.session_state[
-                "lyrics_verification"
-            ] = lyrics_verification
-
-            st.session_state[
-                "edited_lyrics"
-            ] = transcription_analysis[
-                "full_text"
-            ]
-
-            st.session_state[
-                "lyrics_editor"
-            ] = transcription_analysis[
-                "full_text"
-            ]
-
-            st.session_state[
-                "lyrics_verified"
-            ] = False
-
-            st.session_state[
-                "vibe_check"
-            ] = None
+                fallback_bpm = (
+                    fallback_rhythm.get(
+                        "tempo_adjusted_bpm",
+                        fallback_rhythm.get(
+                            "tempo_raw_bpm",
+                            "N/A"
+                        )
+                    )
+                )
 
 
-            st.success(
-                "Track read successfully ⚡"
-            )
+                fallback_dynamic_range = (
+                    fallback_energy.get(
+                        "dynamic_range_class",
+                        "N/A"
+                    )
+                )
+
+
+                fallback_climax = (
+                    fallback_structure.get(
+                        "climax",
+                        {}
+                    ).get(
+                        "description",
+                        "Not detected"
+                    )
+                )
+
+
+                fallback_duration = (
+                    fallback_audio_info.get(
+                        "duration_sec",
+                        "N/A"
+                    )
+                )
+
+
+                st.markdown(
+                    "### Audio analysis is still ready"
+                )
+
+
+                fallback_cols = st.columns(
+                    3
+                )
+
+
+                with fallback_cols[0]:
+
+                    if isinstance(
+                        fallback_bpm,
+                        (int, float)
+                    ):
+
+                        fallback_bpm_display = (
+                            f"{fallback_bpm:.1f}"
+                        )
+
+                    else:
+
+                        fallback_bpm_display = str(
+                            fallback_bpm
+                        )
+
+
+                    st.metric(
+                        "Perceived BPM",
+                        fallback_bpm_display
+                    )
+
+
+                with fallback_cols[1]:
+
+                    st.metric(
+                        "Dynamic Range",
+                        str(
+                            fallback_dynamic_range
+                        )
+                    )
+
+
+                with fallback_cols[2]:
+
+                    if isinstance(
+                        fallback_duration,
+                        (int, float)
+                    ):
+
+                        duration_display = (
+                            f"{fallback_duration:.1f} sec"
+                        )
+
+                    else:
+
+                        duration_display = str(
+                            fallback_duration
+                        )
+
+
+                    st.metric(
+                        "Duration",
+                        duration_display
+                    )
+
+
+                st.caption(
+                    "Climax: "
+                    + str(
+                        fallback_climax
+                    )
+                )
+
+
+                st.info(
+                    "You can retry transcription without "
+                    "re-running the deterministic audio analysis."
+                )
 
 
         except Exception as error:
@@ -504,6 +873,45 @@ if uploaded_file is not None:
                 st.session_state[
                     "verified_lyrics"
                 ] = verified_lyrics
+
+
+                # ----------------------------------------
+                # Invalidate critique if verified lyrics changed
+                # ----------------------------------------
+
+                approved_lyrics_hash = hashlib.sha256(
+                    verified_lyrics.encode(
+                        "utf-8"
+                    )
+                ).hexdigest()
+
+
+                approved_vibe_cache_key = (
+                    st.session_state.get(
+                        "song_hash",
+                        ""
+                    )
+                    + ":"
+                    + approved_lyrics_hash
+                )
+
+
+                if (
+                    st.session_state.get(
+                        "vibe_check_cache_key"
+                    )
+                    != approved_vibe_cache_key
+                ):
+
+                    st.session_state.pop(
+                        "vibe_check",
+                        None
+                    )
+
+                    st.session_state.pop(
+                        "observations",
+                        None
+                    )
 
                 st.session_state[
                     "lyrics_verified"
@@ -618,30 +1026,81 @@ if uploaded_file is not None:
                 # Run Gemini creator-side critique
                 # ----------------------------------------
 
-                with st.spinner(
-                    "Reading the vibe... 🔥"
-                ):
+                # ----------------------------------------
+                # Vibe Check cache
+                #
+                # Cache identity:
+                # song SHA-256 + verified lyrics SHA-256
+                # ----------------------------------------
 
-                    vibe_check = run_vibe_check(
-
-                        analysis_result=
-                            analysis_result,
-
-                        transcription_intelligence=
-                            transcription_intelligence,
-
-                        verified_lyrics=
-                            verified_lyrics,
-
-                        observations=
-                            observations,
-
-                        gemini_client=
-                            gemini_client,
-
-                        model_name=
-                            GEMINI_MODEL
+                verified_lyrics_hash = hashlib.sha256(
+                    verified_lyrics.encode(
+                        "utf-8"
                     )
+                ).hexdigest()
+
+
+                vibe_cache_key = (
+                    st.session_state.get(
+                        "song_hash",
+                        ""
+                    )
+                    + ":"
+                    + verified_lyrics_hash
+                )
+
+
+                vibe_is_cached = (
+                    st.session_state.get(
+                        "vibe_check_cache_key"
+                    )
+                    == vibe_cache_key
+                    and "vibe_check"
+                        in st.session_state
+                )
+
+
+                if vibe_is_cached:
+
+                    vibe_check = (
+                        st.session_state[
+                            "vibe_check"
+                        ]
+                    )
+
+
+                else:
+
+                    with st.spinner(
+                        "Reading the vibe... 🔥"
+                    ):
+
+                        vibe_check = run_vibe_check(
+
+                            analysis_result=
+                                analysis_result,
+
+                            transcription_intelligence=
+                                transcription_intelligence,
+
+                            verified_lyrics=
+                                verified_lyrics,
+
+                            observations=
+                                observations,
+
+                            gemini_client=
+                                gemini_client,
+
+                            model_name=
+                                GEMINI_MODEL
+                        )
+
+
+                    # Save the key only AFTER Gemini succeeds.
+                    st.session_state[
+                        "vibe_check_cache_key"
+                    ] = vibe_cache_key
 
 
                 # ----------------------------------------

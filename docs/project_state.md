@@ -352,3 +352,28 @@ Vibe Check retries: 1
 Fallback model: none
 Core Streamlit dependency: none
 ```
+
+<!-- MUSEMIRROR_RELIABILITY_RELEASE_2026-09-01 -->
+
+## Production Reliability Hardening - 2026-09-01
+
+MuseMirror AI V2 was hardened for interview and production-style deployment reliability.
+
+- Dedicated transcription model: `gemini-3.5-transcribe`.
+- Creator Vibe Check model: `gemini-3.6-flash`.
+- Google GenAI SDK pinned to `google-genai==2.20.0`.
+- Gemini request timeout: 45 seconds.
+- Each AI stage uses one retry after the initial attempt.
+- Deterministic audio analysis is cached using a SHA-256 song fingerprint.
+- Successful transcription is cached independently from downstream critique.
+- Successful Vibe Check output is cached using the song fingerprint plus verified-lyrics hash.
+- A transcription failure no longer destroys completed deterministic audio analysis.
+- Graceful degradation keeps the app usable when the transcription API is unavailable.
+- Core audio / AI modules remain independent of Streamlit.
+- A precomputed payload was used locally for regression testing, but Demo Mode is not exposed in the public application.
+- Local regression validation passed.
+- A real-song end-to-end test passed after the reliability changes.
+
+Public MuseMirror flow remains:
+
+Upload track -> deterministic audio analysis -> dedicated transcription -> artist lyric verification -> grounded observations -> Gemini Vibe Check -> final Track Declassified experience.
