@@ -2,7 +2,7 @@ streamlit
 google-genai==2.20.0
 python-dotenv
 librosa
-soundfile
 numpy
 pandas
 matplotlib
+soundfile==0.13.1
